@@ -40,13 +40,17 @@ jobs:
           choco install innosetup
           pip3 install poetry==2.2.1
 
+      # One venv for every submodule: poetry installs into the active one instead of making its own.
       - name: Build
         run: |
+          python3 -m venv venv
+          source venv/Scripts/activate
           poetry install
           make build
 
       - name: Package
         run: |
+          source venv/Scripts/activate
           poetry install
           make package
 
