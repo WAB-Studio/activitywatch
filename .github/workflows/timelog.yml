@@ -1,0 +1,65 @@
+# ActivityWatch + TimeLog: the Qt edition for Windows, with aw-timelog bundled and started by default.
+# A tag `timelog-v*` publishes the installer as a GitHub release; anything else leaves it as an artifact.
+name: TimeLog installer
+
+on:
+  push:
+    branches: [timelog]
+    tags: ["timelog-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    env:
+      POETRY_INSTALLER_PARALLEL: "false"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: |
+          choco install innosetup
+          pip3 install poetry==2.2.1
+
+      - name: Build
+        run: |
+          poetry install
+          make build
+
+      - name: Package
+        run: |
+          poetry install
+          make package
+
+      - name: aw-timelog is in the bundle
+        run: test -f dist/activitywatch/aw-client/aw-timelog.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: activitywatch-timelog-windows
+          path: dist/activitywatch-*-setup.exe
+
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/timelog-v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/activitywatch-*-setup.exe --title "ActivityWatch + TimeLog $GITHUB_REF_NAME" --notes "ActivityWatch con aw-timelog: pega tu llave de TimeLog en el ícono, «TimeLog: pegar llave…»."

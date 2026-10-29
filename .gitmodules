@@ -3,7 +3,8 @@
 	url = https://github.com/ActivityWatch/aw-core.git
 [submodule "aw-client"]
 	path = aw-client
-	url = https://github.com/ActivityWatch/aw-client.git
+	url = https://github.com/WAB-Studio/timelog-sync.git
+	branch = timelog
 [submodule "aw-server"]
 	path = aw-server
 	url = https://github.com/ActivityWatch/aw-server.git
@@ -12,7 +13,8 @@
 	url = https://github.com/ActivityWatch/aw-watcher-afk.git
 [submodule "aw-qt"]
 	path = aw-qt
-	url = https://github.com/ActivityWatch/aw-qt.git
+	url = https://github.com/WAB-Studio/aw-qt.git
+	branch = timelog
 [submodule "aw-watcher-window"]
 	path = aw-watcher-window
 	url = https://github.com/ActivityWatch/aw-watcher-window.git
