@@ -62,4 +62,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/timelog-v')
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/activitywatch-*-setup.exe --title "ActivityWatch + TimeLog $GITHUB_REF_NAME" --notes "ActivityWatch con aw-timelog: pega tu llave de TimeLog en el ícono, «TimeLog: pegar llave…»."
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/activitywatch-*-setup.exe \
+            --title "ActivityWatch + TimeLog $GITHUB_REF_NAME" \
+            --notes "ActivityWatch con aw-timelog. Pega tu llave de TimeLog en el ícono, en «TimeLog: pegar llave…»."
