@@ -75,8 +75,12 @@ jobs:
           poetry install
           make package
 
-      - name: aw-timelog is in the bundle
-        run: test -f dist/activitywatch/aw-client/aw-timelog.exe
+      # The file being there is not enough: aw-qt has to find it, or it never starts.
+      - name: aw-timelog is in the bundle and aw-qt finds it
+        run: |
+          test -f dist/activitywatch/aw-client/aw-timelog.exe
+          source venv/Scripts/activate
+          python -c "from aw_qt import manager; found = {m.name for m in manager.filter_modules(manager._discover_modules_in_directory('dist/activitywatch'))}; print(sorted(found)); assert 'aw-timelog' in found"
 
       - uses: actions/upload-artifact@v4
         with:
