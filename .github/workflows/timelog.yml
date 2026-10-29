@@ -34,6 +34,24 @@ jobs:
           node-version: 22
 
       - uses: dtolnay/rust-toolchain@stable
+        id: toolchain
+
+      # The Rust server and the two web UIs are most of the build; a rebuild reuses what did not change.
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            aw-server/aw-webui/node_modules
+            aw-server-rust/aw-webui/node_modules
+          key: windows-node_modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: windows-node_modules-
+
+      - name: Cache cargo build
+        uses: actions/cache@v4
+        with:
+          path: aw-server-rust/target
+          key: windows-cargo-${{ steps.toolchain.outputs.cachekey }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: windows-cargo-${{ steps.toolchain.outputs.cachekey }}-
 
       - name: Install dependencies
         run: |
