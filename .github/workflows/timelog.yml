@@ -45,12 +45,15 @@ jobs:
         run: |
           python3 -m venv venv
           source venv/Scripts/activate
+          # Our tags are named timelog-v*, not a version: aw-server-rust would write the name into Cargo.toml.
+          export GITHUB_REF_TYPE=branch
           poetry install
           make build
 
       - name: Package
         run: |
           source venv/Scripts/activate
+          export GITHUB_REF_TYPE=branch
           poetry install
           make package
 
