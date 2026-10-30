@@ -29,23 +29,17 @@ jobs:
         with:
           python-version: "3.9"
 
+      # `npm ci` wipes node_modules, so the download cache is what a rebuild reuses.
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: "**/aw-webui/package-lock.json"
 
       - uses: dtolnay/rust-toolchain@stable
         id: toolchain
 
-      # The Rust server and the two web UIs are most of the build; a rebuild reuses what did not change.
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            aw-server/aw-webui/node_modules
-            aw-server-rust/aw-webui/node_modules
-          key: windows-node_modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: windows-node_modules-
-
+      # The Rust server is most of the build; a rebuild reuses what did not change.
       - name: Cache cargo build
         uses: actions/cache@v4
         with:
