@@ -66,6 +66,8 @@ jobs:
         run: |
           source venv/Scripts/activate
           export GITHUB_REF_TYPE=branch
+          # A release tag names the version aw-timelog updates from; any other build is «dev».
+          if [[ "$GITHUB_REF" == refs/tags/timelog-v* ]]; then export TIMELOG_VERSION="${GITHUB_REF_NAME#timelog-v}"; else export TIMELOG_VERSION=dev; fi
           poetry install
           make package
 
@@ -73,6 +75,7 @@ jobs:
       - name: aw-timelog is in the bundle and aw-qt finds it
         run: |
           test -f dist/activitywatch/aw-client/aw-timelog.exe
+          test -s dist/activitywatch/timelog-version.txt
           source venv/Scripts/activate
           python -c "from aw_qt import manager; found = {m.name for m in manager.filter_modules(manager._discover_modules_in_directory('dist/activitywatch'))}; print(sorted(found)); assert 'aw-timelog' in found"
 
@@ -88,4 +91,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" dist/activitywatch-*-setup.exe \
             --title "ActivityWatch + TimeLog $GITHUB_REF_NAME" \
-            --notes "ActivityWatch con aw-timelog. Pega tu llave de TimeLog en el ícono, en «TimeLog: pegar llave…»."
+            --notes "ActivityWatch con aw-timelog. Pega tu llave de TimeLog en el ícono, en «TimeLog: pegar llave…». Desde esta versión se actualiza solo."

@@ -81,6 +81,11 @@ if [[ $platform == "linux" && $TAURI_BUILD == "true" ]]; then
     rm -rf dist/activitywatch/awatcher
 fi
 
+# aw-timelog reads it to know which release it is; «dev» never updates itself.
+if [[ -n "${TIMELOG_VERSION:-}" ]]; then
+    echo "$TIMELOG_VERSION" > dist/activitywatch/timelog-version.txt
+fi
+
 function build_zip() {
     echo "Zipping executables..."
     pushd dist;

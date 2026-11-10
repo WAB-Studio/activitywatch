@@ -56,6 +56,8 @@ Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: St
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+; aw-timelog's self-update runs this setup silent: ActivityWatch has to come back on its own.
+Filename: "{app}\{#MyAppExeName}"; Flags: nowait skipifnotsilent
 
 ; Removes the previously installed version before installing the new one
 ; NOTE: Doesn't work? And also discouraged by the docs
